@@ -34,3 +34,8 @@ export const deleteTransactions = async () => {
   await axios.delete(`http://localhost:3000/qldb/deleteAllData`)
                               .then(response => response.data)
 }
+
+export const verifyTransaction = async (id) => {
+  return await axios.get(`http://localhost:3000/qldb/verifyTransaction?id=${id}`)
+                              .then(response => response.data)
+}

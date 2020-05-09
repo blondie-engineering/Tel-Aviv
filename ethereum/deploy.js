@@ -3,8 +3,8 @@ const Web3 = require('web3');
 const compiledFactory = require('./build/TransactionFactory.json');
 
 const provider = new HDWalletProvider(
-  'xxx',
-  'xxx'
+  'dove barrel sting bicycle mass garden art inmate report detect main hospital',
+  'https://rinkeby.infura.io/v3/0ea267996e4943adae8zza4e240c8292'
 );
 const web3 = new Web3(provider);
 

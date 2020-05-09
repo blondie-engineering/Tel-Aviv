@@ -4,7 +4,7 @@ import Layout from '../../components/Layout';
 import Transaction from '../../ethereum/transaction';
 import web3 from '../../ethereum/web3';
 import { Link } from '../../routes';
-import { queryHistory, backupInEth, addAmount } from '../../services/qldb';
+import { queryHistory, backupInEth, addAmount, verifyTransaction } from '../../services/qldb';
 import factory from '../../ethereum/factory';
 
 class CampaignShow extends Component {
@@ -18,10 +18,17 @@ class CampaignShow extends Component {
     history: [],
     loading: false,
     errorMessage: '',
+    isVerifying: false,
+    verifiedStatus: '',
     shouldBeDisabled: this.props.history.slice(-1)[0].inEth
   }
 
-  async addHundredDollars() {
+  nullifyErrorMiddleware = (func) => {
+    this.setState({errorMessage: null});
+    func();
+  }
+
+  addHundredDollars = async() => {
     this.setState({loading: true});
     try {
       const id = this.props.id;
@@ -36,7 +43,7 @@ class CampaignShow extends Component {
 
   }
 
-  async backupTransaction() {
+  backupTransaction = async() => {
     this.setState({loading: true});
     try {
       const accounts = await web3.eth.getAccounts();
@@ -54,6 +61,20 @@ class CampaignShow extends Component {
       this.setState({ errorMessage: err.message });
     } finally {
       this.setState({loading: false});
+    }
+  }
+
+  checkSecurity = async() => {
+    this.setState({isVerifying: true});
+    try {
+      const result = await verifyTransaction(this.props.id);
+      console.log(result);
+      console.log(result.message);
+      this.setState({ verifiedStatus: result.message });
+    } catch (err) {
+      this.setState({ errorMessage: err.message });
+    } finally {
+      this.setState({isVerifying: false});
     }
   }
 
@@ -89,18 +110,41 @@ class CampaignShow extends Component {
     return (
       <Layout>
         <h3>Transaction history Show</h3>
+
+        {
+          this.state.verifiedStatus === 'Verified' && (
+            <div stlye={{ paddingBottom: '10px', BottommarginBottom: '10px'}}>
+            <Icon name='birthday cake large'/> Successfull verification!
+            </div>
+
+          )
+        }
+        {
+          this.state.verifiedStatus === 'Hacked' && (
+            <div stlye={{ paddingBottom: '10px', marginBottom: '10px'}}>
+            <Icon name='alarm large'/> The blockchain has been hacked!
+            </div>
+          )
+        }
+        {
+          this.state.verifiedStatus === '' && (
+            <div style={{ cursor: 'pointer', marginBottom: '15px' }} onClick={() => this.nullifyErrorMiddleware(this.checkSecurity)}>
+              <Icon link loading={this.state.isVerifying} name='user secret'/> Check block revision security <Icon loading={this.state.isVerifying} link name='user secret'/>
+            </div>
+          )
+        }
         <Grid>
           <Grid.Row>
             <Grid.Column width={10}>{this.renderCards()}</Grid.Column>
 
             <Grid.Column width={6}>
               <Button primary loading={this.state.loading} disabled={this.state.shouldBeDisabled}>
-                <div onClick={() => this.backupTransaction()}>
+                <div onClick={() => this.nullifyErrorMiddleware(this.backupTransaction)}>
                 Backup transaction
                 </div>
               </Button>
               <Button secondary loading={this.state.loading} disabled={this.state.shouldBeDisabled}>
-                <div onClick={() => this.addHundredDollars()}>
+                <div onClick={() => this.nullifyErrorMiddleware(this.addHundredDollars)}>
                 Add 100 dollars
                 </div>
               </Button>
