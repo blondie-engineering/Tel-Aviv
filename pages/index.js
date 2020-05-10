@@ -3,13 +3,18 @@ import { Card, Button, Checkbox } from 'semantic-ui-react';
 import factory from '../ethereum/factory';
 import Layout from '../components/Layout';
 import { Link } from '../routes';
+import {getEthTransactions, getQldbTransactions} from '../redux/actions/statsActions';
+import {connect} from 'react-redux';
 
 class CampaignIndex extends Component {
 
-  static async getInitialProps() {
+  static async getInitialProps(props) {
     const campaigns = await factory.methods.getDeployedTransactions().call();
-
     return { campaigns };
+  }
+
+  componentDidMount() {
+    this.props.ethTransactions(this.props.campaigns.length);
   }
 
   renderCampaigns() {
@@ -49,4 +54,13 @@ class CampaignIndex extends Component {
   }
 }
 
-export default CampaignIndex;
+const mapStateToProps = state => ({
+    counter: state.stats.ethTransactions
+});
+
+const mapDispatchToProps = {
+    ethTransactions: (transactions) => getEthTransactions(transactions)
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(CampaignIndex);

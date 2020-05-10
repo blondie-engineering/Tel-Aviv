@@ -4,6 +4,8 @@ import factory from '../../ethereum/factory';
 import Layout from '../../components/Layout';
 import { Router, Link } from '../../routes';
 import { getTransactions, deleteTransactions } from '../../services/qldb';
+import {connect} from 'react-redux';
+import { getQldbTransactions} from '../../redux/actions/statsActions';
 
 class CampaignIndex extends Component {
 
@@ -17,6 +19,7 @@ class CampaignIndex extends Component {
     try {
       const transactions = await getTransactions();
       this.setState({transactions});
+      this.props.qldbTransactions(transactions.length)
     } catch(err) {
       console.log(err);
       this.setState({errorMessage: err.message})
@@ -100,4 +103,13 @@ class CampaignIndex extends Component {
   }
 }
 
-export default CampaignIndex;
+const mapStateToProps = state => ({
+    counter: state.stats.qldbTransactions
+});
+
+const mapDispatchToProps = {
+    qldbTransactions: (transactions) => getQldbTransactions(transactions)
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(CampaignIndex);

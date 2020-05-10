@@ -3,8 +3,9 @@ import { Menu, Checkbox, Button } from 'semantic-ui-react';
 import { Link } from '../routes';
 import { Router } from '../routes';
 import {useRouter} from 'next/router';
+import {connect} from 'react-redux';
 
-export default (props) => {
+const header =  (props) => {
   const router = useRouter();
 
   let transactionType = router.pathname.includes('qldbTransactions') ? 'QLDB' : 'ETH';
@@ -29,22 +30,22 @@ export default (props) => {
 
       <div style={{ marginBottom: '20px' }}>
           <Button
-            color='red'
-            content='Like'
-            icon='heart'
-            label={{ basic: true, color: 'red', pointing: 'left', content: '2,048' }}
+            color='black'
+            content='Ethereum transactions'
+            icon='diamond'
+            label={{ basic: true, color: 'black', pointing: 'left', content: props.ethTransactions }}
           />
           <Button
             basic
             color='blue'
-            content='Fork'
-            icon='fork'
+            content='QLDB transactions'
+            icon='book'
             label={{
               as: 'a',
               basic: true,
               color: 'blue',
               pointing: 'left',
-              content: '2,048',
+              content: props.qldbTransactions
             }}
           />
         </div>
@@ -54,3 +55,10 @@ export default (props) => {
     </div>
   );
 };
+
+const mapStateToProps = state => ({
+    ethTransactions: state.stats.ethTransactions,
+    qldbTransactions: state.stats.qldbTransactions
+});
+
+export default connect(mapStateToProps)(header);
