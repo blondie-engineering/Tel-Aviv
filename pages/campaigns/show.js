@@ -4,12 +4,15 @@ import Layout from '../../components/Layout';
 import Transaction from '../../ethereum/transaction';
 import web3 from '../../ethereum/web3';
 import { Link } from '../../routes';
+import { insertStatistic } from '../../services/dynamo';
 
 class CampaignShow extends Component {
   static async getInitialProps(props) {
     const campaign = Transaction(props.query.address);
-
+    const t0 = new Date().getTime();
     const summary = await campaign.methods.getSummary().call();
+    const t1 = new Date().getTime();
+    await insertStatistic('eth', 'getSpecific', t1 - t0);
 
     return {
       address: props.query.address,

@@ -5,11 +5,16 @@ import Layout from '../components/Layout';
 import { Link } from '../routes';
 import { getEthTransactions } from '../redux/actions/statsActions';
 import {connect} from 'react-redux';
+import { insertStatistic } from '../services/dynamo';
+
 
 class CampaignIndex extends Component {
 
   static async getInitialProps(props) {
+    const t0 = new Date().getTime();
     const campaigns = await factory.methods.getDeployedTransactions().call();
+    const t1 = new Date().getTime();
+    await insertStatistic('eth', 'get', t1 - t0);
     return { campaigns };
   }
 

@@ -6,11 +6,15 @@ import web3 from '../../ethereum/web3';
 import { Link } from '../../routes';
 import { queryHistory, backupInEth, addAmount, verifyTransaction } from '../../services/qldb';
 import factory from '../../ethereum/factory';
+import { insertStatistic } from '../../services/dynamo';
 
 class CampaignShow extends Component {
   static async getInitialProps(props) {
     const id = props.query.id;
+    const t0 = new Date().getTime();
     const history = await queryHistory(id);
+    const t1 = new Date().getTime();
+    await insertStatistic('qldb', 'getSpecific', t1 - t0);
     return { history, id };
   }
 

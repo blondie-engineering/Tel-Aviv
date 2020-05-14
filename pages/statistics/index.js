@@ -5,9 +5,45 @@ import { getStatistics } from '../../services/dynamo';
 
 class TableIndex extends Component {
 
+  state = {
+    qldbPutsAmount: null,
+    ethPutsAmount: null,
+    qldbGetsAmount: null,
+    ethGetsAmount: null,
+    qldbGetsSpecificAmount: null,
+    ethGetsSpecificAmount: null,
+    qldbPutsTime: null,
+    ethPutsTime: null,
+    qldbGetsTime: null,
+    ethGetsTime: null,
+    qldbGetsSpecificTime: null,
+    ethGetsSpecificTime: null
+  }
+
   async componentDidMount() {
       const statistics = await getStatistics();
-      console.log(statistics);
+
+      const qldbPuts = statistics.Items.filter(stat => stat.storage.S === 'qldb' && stat.operation_type.S === 'put');
+      const qldbGets = statistics.Items.filter(stat => stat.storage.S === 'qldb' && stat.operation_type.S === 'get');
+      const qldbGetsSpecific = statistics.Items.filter(stat => stat.storage.S === 'qldb' && stat.operation_type.S === 'getSpecific');
+      const qldbPutsAmount = qldbPuts.length;
+      const qldbPutsTime = qldbPuts.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / qldbPutsAmount;
+      const qldbGetsAmount = qldbGets.length;
+      const qldbGetsTime = qldbGets.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / qldbGetsAmount;
+      const qldbGetsSpecificAmount = qldbGetsSpecific.length;
+      const qldbGetsSpecificTime = qldbGetsSpecific.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / qldbGetsSpecificAmount;
+
+      const ethPuts = statistics.Items.filter(stat => stat.storage.S === 'eth' && stat.operation_type.S === 'put');
+      const ethGets = statistics.Items.filter(stat => stat.storage.S === 'eth' && stat.operation_type.S === 'get');
+      const ethGetsSpecific = statistics.Items.filter(stat => stat.storage.S === 'eth' && stat.operation_type.S === 'getSpecific');
+      const ethPutsAmount = ethPuts.length;
+      const ethPutsTime = ethPuts.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / ethPutsAmount;
+      const ethGetsAmount = ethGets.length;
+      const ethGetsTime = ethGets.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / ethGetsAmount;
+      const ethGetsSpecificAmount = ethGetsSpecific.length;
+      const ethGetsSpecificTime = ethGetsSpecific.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / ethGetsSpecificAmount;
+
+      this.setState({ qldbPutsAmount, qldbPutsTime, ethPutsAmount, ethPutsTime, qldbGetsAmount, qldbGetsTime, ethGetsAmount, ethGetsTime, qldbGetsSpecificTime, qldbGetsSpecificAmount, ethGetsSpecificTime, ethGetsSpecificAmount});
   }
 
   render() {
@@ -16,59 +52,61 @@ class TableIndex extends Component {
         <Table basic='very' celled collapsing>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>Employee</Table.HeaderCell>
-              <Table.HeaderCell>Correct Guesses</Table.HeaderCell>
+              <Table.HeaderCell>Storage</Table.HeaderCell>
+              <Table.HeaderCell>Operation Type</Table.HeaderCell>
+              <Table.HeaderCell>Operations</Table.HeaderCell>
+              <Table.HeaderCell>Operation average time [ms]</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
           <Table.Body>
             <Table.Row>
               <Table.Cell>
-                <Header as='h4' image>
-                  <Image src='https://react.semantic-ui.com/images/avatar/small/lena.png' rounded size='mini' />
-                  <Header.Content>
-                    Lena
-                    <Header.Subheader>Human Resources</Header.Subheader>
-                  </Header.Content>
-                </Header>
+                <Icon  name='diamond'/>
               </Table.Cell>
-              <Table.Cell>22</Table.Cell>
+              <Table.Cell>PUT</Table.Cell>
+              <Table.Cell>{ this.state.ethPutsAmount }</Table.Cell>
+              <Table.Cell>{ this.state.ethPutsTime }</Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Cell>
-                <Header as='h4' image>
-                  <Image src='https://react.semantic-ui.com/images/avatar/small/matthew.png' rounded size='mini' />
-                  <Header.Content>
-                    Matthew
-                    <Header.Subheader>Fabric Design</Header.Subheader>
-                  </Header.Content>
-                </Header>
+                <Icon  name='book'/>
               </Table.Cell>
-              <Table.Cell>15</Table.Cell>
+              <Table.Cell>PUT</Table.Cell>
+              <Table.Cell>{ this.state.qldbPutsAmount }</Table.Cell>
+              <Table.Cell>{ this.state.qldbPutsTime }</Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Cell>
-                <Header as='h4' image>
-                  <Image src='https://react.semantic-ui.com/images/avatar/small/lindsay.png' rounded size='mini' />
-                  <Header.Content>
-                    Lindsay
-                    <Header.Subheader>Entertainment</Header.Subheader>
-                  </Header.Content>
-                </Header>
+                <Icon  name='diamond'/>
               </Table.Cell>
-              <Table.Cell>12</Table.Cell>
+              <Table.Cell>GET [list]</Table.Cell>
+              <Table.Cell>{ this.state.ethGetsAmount }</Table.Cell>
+              <Table.Cell>{ this.state.ethGetsTime }</Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Cell>
-                <Header as='h4' image>
-                  <Image src='https://react.semantic-ui.com/images/avatar/small/mark.png' rounded size='mini' />
-                  <Header.Content>
-                    Mark
-                    <Header.Subheader>Executive</Header.Subheader>
-                  </Header.Content>
-                </Header>
+                <Icon  name='book'/>
               </Table.Cell>
-              <Table.Cell>11</Table.Cell>
+              <Table.Cell>GET [list]</Table.Cell>
+              <Table.Cell>{ this.state.qldbGetsAmount }</Table.Cell>
+              <Table.Cell>{ this.state.qldbGetsTime }</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>
+                <Icon  name='diamond'/>
+              </Table.Cell>
+              <Table.Cell>GET [specific record]</Table.Cell>
+              <Table.Cell>{ this.state.ethGetsSpecificAmount }</Table.Cell>
+              <Table.Cell>{ this.state.ethGetsSpecificTime }</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>
+                <Icon  name='book'/>
+              </Table.Cell>
+              <Table.Cell>GET [specificRecord]</Table.Cell>
+              <Table.Cell>{ this.state.qldbGetsSpecificAmount }</Table.Cell>
+              <Table.Cell>{ this.state.qldbGetsSpecificTime }</Table.Cell>
             </Table.Row>
           </Table.Body>
         </Table>

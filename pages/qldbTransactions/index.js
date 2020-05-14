@@ -4,6 +4,7 @@ import factory from '../../ethereum/factory';
 import Layout from '../../components/Layout';
 import { Router, Link } from '../../routes';
 import { getTransactions, deleteTransactions } from '../../services/qldb';
+import { insertStatistic } from '../../services/dynamo';
 import {connect} from 'react-redux';
 import { getQldbTransactions} from '../../redux/actions/statsActions';
 
@@ -17,7 +18,10 @@ class CampaignIndex extends Component {
 
   async componentDidMount() {
     try {
+      const t0 = new Date().getTime();
       const transactions = await getTransactions();
+      const t1 = new Date().getTime();
+      await insertStatistic('qldb', 'get', t1 - t0);
       this.setState({transactions});
       this.props.qldbTransactions(transactions.length)
     } catch(err) {
