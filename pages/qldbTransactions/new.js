@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Form, Button, Input, Message } from 'semantic-ui-react';
+import { Form, Button, Input, Message, Icon } from 'semantic-ui-react';
 import Layout from '../../components/Layout';
 import factory from '../../ethereum/factory';
 import web3 from '../../ethereum/web3';
 import { Router } from '../../routes';
 import { createTransaction } from '../../services/qldb';
+import { insertStatistic } from '../../services/dynamo';
+
 class TransactionNew extends Component {
   state = {
     amountValue: null,
@@ -19,7 +21,10 @@ class TransactionNew extends Component {
     this.setState({ loading: true, errorMessage: '' });
 
     try {
+      const t0 = new Date().getTime();
       await createTransaction(Number(this.state.amountValue), this.state.companyName);
+      const t1 = new Date().getTime();
+      await insertStatistic('qldb', 'put', t1 - t0);
       Router.pushRoute('/');
     } catch (err) {
       this.setState({ errorMessage: err.message });

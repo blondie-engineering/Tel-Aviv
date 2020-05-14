@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Card, Button, Checkbox } from 'semantic-ui-react';
+import { Card, Button, Checkbox, Icon } from 'semantic-ui-react';
 import factory from '../ethereum/factory';
 import Layout from '../components/Layout';
 import { Link } from '../routes';
-import {getEthTransactions, getQldbTransactions} from '../redux/actions/statsActions';
+import { getEthTransactions } from '../redux/actions/statsActions';
 import {connect} from 'react-redux';
 
 class CampaignIndex extends Component {

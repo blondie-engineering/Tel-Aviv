@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Button, Message } from 'semantic-ui-react';
+import { Card, Button, Message, Icon } from 'semantic-ui-react';
 import factory from '../../ethereum/factory';
 import Layout from '../../components/Layout';
 import { Router, Link } from '../../routes';

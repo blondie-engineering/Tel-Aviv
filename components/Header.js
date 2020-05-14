@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Checkbox, Button } from 'semantic-ui-react';
+import { Menu, Checkbox, Button, Icon } from 'semantic-ui-react';
 import { Link } from '../routes';
 import { Router } from '../routes';
 import {useRouter} from 'next/router';
@@ -52,6 +52,7 @@ const header =  (props) => {
 
       <Button primary disabled={transactionType === 'QLDB'} onClick={()=> Router.pushRoute(`/qldbTransactions`)}>QLDB</Button>
       <Button secondary disabled={transactionType === 'ETH'} onClick={()=>  Router.pushRoute(`/`)}>ETH</Button>
+      <Button  onClick={()=>  Router.pushRoute(`/statistics`)}>STATS <Icon style={{ marginLeft: '5px'}} name='chart line'/></Button>
     </div>
   );
 };
