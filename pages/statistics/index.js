@@ -17,7 +17,13 @@ class TableIndex extends Component {
     qldbGetsTime: null,
     ethGetsTime: null,
     qldbGetsSpecificTime: null,
-    ethGetsSpecificTime: null
+    ethGetsSpecificTime: null,
+    qldbRevisionTime: null,
+    qldbRevisionAmount: null,
+    qldbModificationTime: null,
+    qldbModificationAmount: null,
+    ethModificationAmount: null,
+    ethModificationTime: null
   }
 
   async componentDidMount() {
@@ -26,24 +32,37 @@ class TableIndex extends Component {
       const qldbPuts = statistics.Items.filter(stat => stat.storage.S === 'qldb' && stat.operation_type.S === 'put');
       const qldbGets = statistics.Items.filter(stat => stat.storage.S === 'qldb' && stat.operation_type.S === 'get');
       const qldbGetsSpecific = statistics.Items.filter(stat => stat.storage.S === 'qldb' && stat.operation_type.S === 'getSpecific');
+      const qldbRevision = statistics.Items.filter(stat => stat.storage.S === 'qldb' && stat.operation_type.S === 'revision');
+      const qldbMofication = statistics.Items.filter(stat => stat.storage.S === 'qldb' && stat.operation_type.S === 'modification');
       const qldbPutsAmount = qldbPuts.length;
       const qldbPutsTime = qldbPuts.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / qldbPutsAmount;
       const qldbGetsAmount = qldbGets.length;
       const qldbGetsTime = qldbGets.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / qldbGetsAmount;
       const qldbGetsSpecificAmount = qldbGetsSpecific.length;
       const qldbGetsSpecificTime = qldbGetsSpecific.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / qldbGetsSpecificAmount;
+      const qldbRevisionAmount = qldbRevision.length;
+      const qldbRevisionTime = qldbRevision.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / qldbRevisionAmount;
+      const qldbModificationAmount = qldbMofication.length;
+      const qldbModificationTime = qldbMofication.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / qldbModificationAmount;
+
 
       const ethPuts = statistics.Items.filter(stat => stat.storage.S === 'eth' && stat.operation_type.S === 'put');
       const ethGets = statistics.Items.filter(stat => stat.storage.S === 'eth' && stat.operation_type.S === 'get');
       const ethGetsSpecific = statistics.Items.filter(stat => stat.storage.S === 'eth' && stat.operation_type.S === 'getSpecific');
+      const ethModification = statistics.Items.filter(stat => stat.storage.S === 'eth' && stat.operation_type.S === 'modification');
       const ethPutsAmount = ethPuts.length;
       const ethPutsTime = ethPuts.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / ethPutsAmount;
       const ethGetsAmount = ethGets.length;
       const ethGetsTime = ethGets.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / ethGetsAmount;
       const ethGetsSpecificAmount = ethGetsSpecific.length;
       const ethGetsSpecificTime = ethGetsSpecific.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / ethGetsSpecificAmount;
+      const ethModificationAmount = ethModification.length;
+      const ethModificationTime = ethModification.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / ethModificationAmount;
 
-      this.setState({ qldbPutsAmount, qldbPutsTime, ethPutsAmount, ethPutsTime, qldbGetsAmount, qldbGetsTime, ethGetsAmount, ethGetsTime, qldbGetsSpecificTime, qldbGetsSpecificAmount, ethGetsSpecificTime, ethGetsSpecificAmount});
+      this.setState({ qldbPutsAmount, qldbPutsTime, ethPutsAmount, ethPutsTime, qldbGetsAmount,
+                      qldbGetsTime, ethGetsAmount, ethGetsTime, qldbGetsSpecificTime, qldbGetsSpecificAmount,
+                      qldbRevisionAmount, qldbRevisionTime, qldbModificationAmount, qldbModificationTime,
+                      ethGetsSpecificTime, ethGetsSpecificAmount, ethModificationAmount, ethModificationTime});
   }
 
   render() {
@@ -104,9 +123,33 @@ class TableIndex extends Component {
               <Table.Cell>
                 <Icon  name='book'/>
               </Table.Cell>
-              <Table.Cell>GET [specificRecord]</Table.Cell>
+              <Table.Cell>GET [specific record]</Table.Cell>
               <Table.Cell>{ this.state.qldbGetsSpecificAmount }</Table.Cell>
               <Table.Cell>{ this.state.qldbGetsSpecificTime }</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>
+                <Icon  name='book'/>
+              </Table.Cell>
+              <Table.Cell>Revision</Table.Cell>
+              <Table.Cell>{ this.state.qldbRevisionAmount }</Table.Cell>
+              <Table.Cell>{ this.state.qldbRevisionTime }</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>
+                <Icon  name='book'/>
+              </Table.Cell>
+              <Table.Cell>Modification</Table.Cell>
+              <Table.Cell>{ this.state.qldbModificationAmount }</Table.Cell>
+              <Table.Cell>{ this.state.qldbModificationTime }</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>
+                <Icon  name='diamond'/>
+              </Table.Cell>
+              <Table.Cell>Modification</Table.Cell>
+              <Table.Cell>{ this.state.ethModificationAmount }</Table.Cell>
+              <Table.Cell>{ this.state.ethModificationTime }</Table.Cell>
             </Table.Row>
           </Table.Body>
         </Table>

@@ -7,6 +7,11 @@ import { Link } from '../../routes';
 import { insertStatistic } from '../../services/dynamo';
 
 class CampaignShow extends Component {
+
+  state = {
+    loading: false
+  }
+
   static async getInitialProps(props) {
     const campaign = Transaction(props.query.address);
     const t0 = new Date().getTime();
@@ -20,6 +25,20 @@ class CampaignShow extends Component {
       manager: summary[1],
       company: summary[2]
     };
+  }
+
+  async modify() {
+    const accounts = await web3.eth.getAccounts();
+    const campaign = Transaction(this.props.address);
+    this.setState({loading: true});
+    const t0 = new Date().getTime();
+    const result = await campaign.methods.addAmount('100').send({
+      from: accounts[0]
+    });
+    console.log(result);
+    const t1 = new Date().getTime();
+    await insertStatistic('eth', 'modification', t1 - t0);
+    this.setState({loading: false});
   }
 
   renderCards() {
@@ -62,8 +81,11 @@ class CampaignShow extends Component {
         <Grid>
           <Grid.Row>
             <Grid.Column width={10}>{this.renderCards()}</Grid.Column>
-
-
+            <Button secondary loading={this.state.loading}>
+              <div onClick={() => this.modify()}>
+                Add 100 dollars
+              </div>
+            </Button>
           </Grid.Row>
 
         </Grid>

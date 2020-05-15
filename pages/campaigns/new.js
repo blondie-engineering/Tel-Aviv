@@ -23,7 +23,7 @@ class CampaignNew extends Component {
       const accounts = await web3.eth.getAccounts();
       const t0 = new Date().getTime();
       await factory.methods
-        .createTransaction(this.state.amountValue, this.state.companyName)
+        .createTransaction(100, this.state.companyName)
         .send({
           from: accounts[0]
         });

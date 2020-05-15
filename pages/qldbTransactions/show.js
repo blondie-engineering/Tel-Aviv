@@ -36,7 +36,10 @@ class CampaignShow extends Component {
     this.setState({loading: true});
     try {
       const id = this.props.id;
+      const t0 = new Date().getTime();
       await addAmount(id);
+      const t1 = new Date().getTime();
+      await insertStatistic('qldb', 'modification', t1 - t0);
       const history = await queryHistory(id);
       this.setState({ history });
     } catch(err) {
@@ -57,7 +60,6 @@ class CampaignShow extends Component {
           from: accounts[0]
         });
       const campaignAddress = await factory.methods.getNewContract().call();
-      console.log(campaignAddress);
       await backupInEth(this.props.id, campaignAddress);
       const history = await queryHistory(this.props.id);
       this.setState({ errorMessage: null, history, shouldBeDisabled: history.slice(-1)[0].inEth });
@@ -71,9 +73,10 @@ class CampaignShow extends Component {
   checkSecurity = async() => {
     this.setState({isVerifying: true});
     try {
+      const t0 = new Date().getTime();
       const result = await verifyTransaction(this.props.id);
-      console.log(result);
-      console.log(result.message);
+      const t1 = new Date().getTime();
+      await insertStatistic('qldb', 'revision', t1 - t0);
       this.setState({ verifiedStatus: result.message });
     } catch (err) {
       this.setState({ errorMessage: err.message });

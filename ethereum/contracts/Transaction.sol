@@ -32,6 +32,10 @@ contract Transaction {
         company = companyName;
     }
 
+    function addAmount(uint newAmount) public {
+      amountValue = amountValue + newAmount;
+  }
+
     function getSummary() public view returns (
       uint, address, string
       ) {
