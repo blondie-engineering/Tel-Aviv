@@ -59,7 +59,10 @@ class CampaignShow extends Component {
         .send({
           from: accounts[0]
         });
+      const t0 = new Date().getTime();
       const campaignAddress = await factory.methods.getNewContract().call();
+      const t1 = new Date().getTime();
+      await insertStatistic('eth', 'put', t1 - t0);
       await backupInEth(this.props.id, campaignAddress);
       const history = await queryHistory(this.props.id);
       this.setState({ errorMessage: null, history, shouldBeDisabled: history.slice(-1)[0].inEth });
