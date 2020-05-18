@@ -27,6 +27,13 @@ class CampaignShow extends Component {
     };
   }
 
+  async componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  handleClickOutside = () => {
+  }
+
   async modify() {
     const accounts = await web3.eth.getAccounts();
     const campaign = Transaction(this.props.address);
@@ -35,7 +42,6 @@ class CampaignShow extends Component {
     const result = await campaign.methods.addAmount('100').send({
       from: accounts[0]
     });
-    console.log(result);
     const t1 = new Date().getTime();
     await insertStatistic('eth', 'modification', t1 - t0);
     this.setState({loading: false});
