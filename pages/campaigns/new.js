@@ -11,10 +11,26 @@ class CampaignNew extends Component {
     amountValue: '',
     companyName: null,
     errorMessage: '',
-    loading: false
+    loading: false,
+    firstClick: null,
+    metamaskTime: null
   };
 
+  clickHandler = (event) => {
+    if(this.state.firstClick) {
+      const difference = new Date().getTime() - this.state.firstClick;
+      console.log(difference);
+
+      this.setState({ metamaskTime: difference, firstClick: null});
+    }
+  }
+
+  async componentDidMount() {
+    document.addEventListener('mousedown', this.clickHandler);
+  }
+
   onSubmit = async event => {
+    this.setState({ firstClick: new Date().getTime()});
     event.preventDefault();
 
     this.setState({ loading: true, errorMessage: '' });
@@ -29,6 +45,7 @@ class CampaignNew extends Component {
         });
       const t1 = new Date().getTime();
       await insertStatistic('eth', 'put', t1 - t0);
+      await insertStatistic('eth', 'metamask', this.state.metamaskTime);
       Router.pushRoute('/');
     } catch (err) {
       this.setState({ errorMessage: err.message });

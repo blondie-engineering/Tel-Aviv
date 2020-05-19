@@ -23,7 +23,9 @@ class TableIndex extends Component {
     qldbModificationTime: null,
     qldbModificationAmount: null,
     ethModificationAmount: null,
-    ethModificationTime: null
+    ethModificationTime: null,
+    metamaskAmount: null,
+    metamaskTime: null
   }
 
   async componentDidMount() {
@@ -50,6 +52,8 @@ class TableIndex extends Component {
       const ethGets = statistics.Items.filter(stat => stat.storage.S === 'eth' && stat.operation_type.S === 'get');
       const ethGetsSpecific = statistics.Items.filter(stat => stat.storage.S === 'eth' && stat.operation_type.S === 'getSpecific');
       const ethModification = statistics.Items.filter(stat => stat.storage.S === 'eth' && stat.operation_type.S === 'modification');
+      const metamask = statistics.Items.filter(stat => stat.storage.S === 'eth' && stat.operation_type.S === 'metamask');
+
       const ethPutsAmount = ethPuts.length;
       const ethPutsTime = ethPuts.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / ethPutsAmount;
       const ethGetsAmount = ethGets.length;
@@ -58,11 +62,14 @@ class TableIndex extends Component {
       const ethGetsSpecificTime = ethGetsSpecific.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / ethGetsSpecificAmount;
       const ethModificationAmount = ethModification.length;
       const ethModificationTime = ethModification.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / ethModificationAmount;
+      const metamaskAmount = metamask.length;
+      const metamaskTime = metamask.map(stat => parseInt(stat.operation_time.N)).reduce((a, b) => a + b, 0) / metamaskAmount;
+
 
       this.setState({ qldbPutsAmount, qldbPutsTime, ethPutsAmount, ethPutsTime, qldbGetsAmount,
                       qldbGetsTime, ethGetsAmount, ethGetsTime, qldbGetsSpecificTime, qldbGetsSpecificAmount,
                       qldbRevisionAmount, qldbRevisionTime, qldbModificationAmount, qldbModificationTime,
-                      ethGetsSpecificTime, ethGetsSpecificAmount, ethModificationAmount, ethModificationTime});
+                      ethGetsSpecificTime, ethGetsSpecificAmount, ethModificationAmount, ethModificationTime, metamaskAmount, metamaskTime});
   }
 
   render() {
@@ -150,6 +157,14 @@ class TableIndex extends Component {
               <Table.Cell>Modification</Table.Cell>
               <Table.Cell>{ this.state.ethModificationAmount }</Table.Cell>
               <Table.Cell>{ this.state.ethModificationTime }</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>
+                <Icon  name='diamond'/>
+              </Table.Cell>
+              <Table.Cell>Metamask operation</Table.Cell>
+              <Table.Cell>{ this.state.metamaskAmount }</Table.Cell>
+              <Table.Cell>{ this.state.metamaskTime }</Table.Cell>
             </Table.Row>
           </Table.Body>
         </Table>
