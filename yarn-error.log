@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/share/yarn/bin/yarn.js add react-redux
+  /usr/local/bin/node /usr/share/yarn/bin/yarn.js
 
 PATH: 
   /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/spark/bin
@@ -14,7 +14,7 @@ Platform:
   linux x64
 
 Trace: 
-  Error: EACCES: permission denied, unlink '/home/pawel/Pobrane/tel-aviv/node_modules/@ampproject/toolbox-optimizer/LICENSE'
+  Error: EACCES: permission denied, unlink '/home/pawel/Pobrane/tel-aviv/node_modules/.yarn-integrity'
 
 npm manifest: 
   {
@@ -25,7 +25,8 @@ npm manifest:
     "scripts": {
       "test": "mocha",
       "dev": "node server.js",
-      "build": "next build"
+      "build": "next build && next export",
+      "export": "next export"
     },
     "author": "",
     "license": "ISC",
@@ -34,10 +35,12 @@ npm manifest:
       "fs-extra": "^5.0.0",
       "ganache-cli": "^6.0.3",
       "mocha": "^4.1.0",
-      "next": "^9.2.0",
+      "next": "^9.4.0",
+      "next-redux-wrapper": "^6.0.0-rc.7",
       "next-routes": "^1.2.0",
       "react": "^16.2.0",
       "react-dom": "^16.2.0",
+      "react-redux": "^7.2.0",
       "react-router-dom": "^5.1.2",
       "redux": "^4.0.5",
       "semantic-ui-css": "^2.2.12",
@@ -904,7 +907,7 @@ Lockfile:
     dependencies:
       regenerator-runtime "^0.13.2"
   
-  "@babel/runtime@^7.1.2", "@babel/runtime@^7.4.0", "@babel/runtime@^7.8.4":
+  "@babel/runtime@^7.1.2", "@babel/runtime@^7.4.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.4":
     version "7.9.6"
     resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.9.6.tgz#a9102eb5cadedf3f31d08a9ecf294af7827ea29f"
     integrity sha512-64AF1xY3OAkFHqOb9s4jpgk1Mm5vDZ4L3acHvAml+53nO1XbXLuDodsVpO4OIUsmemlUHMxNdYMNJmsvOwLrvQ==
@@ -3842,7 +3845,7 @@ Lockfile:
       minimalistic-assert "^1.0.0"
       minimalistic-crypto-utils "^1.0.1"
   
-  hoist-non-react-statics@^3.1.0:
+  hoist-non-react-statics@^3.1.0, hoist-non-react-statics@^3.3.0:
     version "3.3.2"
     resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
     integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
@@ -5140,6 +5143,11 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
     integrity sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
   
+  next-redux-wrapper@^6.0.0-rc.7:
+    version "6.0.0-rc.7"
+    resolved "https://registry.yarnpkg.com/next-redux-wrapper/-/next-redux-wrapper-6.0.0-rc.7.tgz#44e962d99d951226fb5e998b36acaa9250cb5c24"
+    integrity sha512-oK+IMbCr4fo1zjGn/ZXV0RvgN6V1XndADzXOBpJzx/1b13gJ+cnpnc3KJm+57en39Ev5BlybxXbbcTYYw/nB6A==
+  
   next-routes@^1.2.0:
     version "1.4.2"
     resolved "https://registry.yarnpkg.com/next-routes/-/next-routes-1.4.2.tgz#736a382579a792ea69f35ae70b449acdfefa7944"
@@ -6252,7 +6260,7 @@ Lockfile:
       object.assign "^4.1.0"
       reflect.ownkeys "^0.2.0"
   
-  prop-types@15.7.2, prop-types@^15.5.10, prop-types@^15.6.2:
+  prop-types@15.7.2, prop-types@^15.5.10, prop-types@^15.6.2, prop-types@^15.7.2:
     version "15.7.2"
     resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
     integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -6423,10 +6431,21 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.6.tgz#5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"
     integrity sha512-aUk3bHfZ2bRSVFFbbeVS4i+lNPZr3/WM5jT2J5omUVV1zzcs1nAaf3l51ctA5FFvCRbhrH0bdAsRRQddFJZPtA==
   
-  react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1:
+  react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.9.0:
     version "16.13.1"
     resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
     integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+  
+  react-redux@^7.2.0:
+    version "7.2.0"
+    resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.2.0.tgz#f970f62192b3981642fec46fd0db18a074fe879d"
+    integrity sha512-EvCAZYGfOLqwV7gh849xy9/pt55rJXPwmYvI4lilPM5rUT/1NxuuN59ipdBksRVSvz0KInbPnp4IfoXJXCqiDA==
+    dependencies:
+      "@babel/runtime" "^7.5.5"
+      hoist-non-react-statics "^3.3.0"
+      loose-envify "^1.4.0"
+      prop-types "^15.7.2"
+      react-is "^16.9.0"
   
   react-router-dom@^5.1.2:
     version "5.1.2"
