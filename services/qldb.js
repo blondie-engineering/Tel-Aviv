@@ -1,6 +1,6 @@
 import * as axios from 'axios';
 
-const url = process.env.NEXT_PUBLIC_SERVER || 'localhost:3000';
+const url = process.env.NEXT_PUBLIC_SERVER || 'http://localhost:3000';
 
 export const createTransaction = async (amount, company) => {
   await axios.post(url + "/qldb/insertTransaction",  {

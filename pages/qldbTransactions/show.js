@@ -53,17 +53,19 @@ class CampaignShow extends Component {
   backupTransaction = async() => {
     this.setState({loading: true});
     try {
+      const t0 = new Date().getTime();
       const accounts = await web3.eth.getAccounts();
       await factory.methods
         .createTransaction(this.props.history.slice(-1)[0].amount, this.props.history.slice(-1)[0].company)
         .send({
           from: accounts[0]
         });
-      const t0 = new Date().getTime();
+      console.log(1);
       const campaignAddress = await factory.methods.getNewContract().call();
-      const t1 = new Date().getTime();
-      await insertStatistic('eth', 'put', t1 - t0);
       await backupInEth(this.props.id, campaignAddress);
+      console.log(2);
+      const t1 = new Date().getTime();
+      await insertStatistic('eth', 'backup', t1 - t0);
       const history = await queryHistory(this.props.id);
       this.setState({ errorMessage: null, history, shouldBeDisabled: history.slice(-1)[0].inEth });
     } catch (err) {
